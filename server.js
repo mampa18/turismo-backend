@@ -1,45 +1,25 @@
 import express from 'express';
 import morgan from 'morgan';
+import { MongoClient, ObjectId } from 'mongodb';
 
 const app = express();
-let zonas = [
-    { id: '1', name: 'Casco Antiguo' },
-    { id: '2', name: ' Centro ' },
-    { id: '3', name: ' Puerto' }
-];
+const mongoUrl = 'mongodb://localhost:27017';
+const dbName = 'TURISMO_DB';
 
-let establecimientos = [
-    { id: '9', name: 'Bar Pepe', zonasId: 3, dietaId: 16, preciosId: 23 },
-    { id: '8', name: 'Bar 2', zonasId: 2, dietaId: 14, preciosId: 17 },
-    { id: '10', name: ' Bar 3', zonasId: 3, dietaId: 15, preciosId: 18 }
-]
+let db;
 
-let filtros = [
-    { id: '11', name: 'Dieta'},
-    { id: '12', name: 'Precio' },
-    { id: '13', name: 'Alergenos'}
-]
-
-let dieta = [
-    { id: '14', name: 'Vegetariana'},
-    { id: '15', name: 'Vegana' },
-    { id: '16', name: 'Flexitariana'}
-]
-
-let precios = [
-    { id: '17', precioMin: '1', precioMax: '10'},
-    { id: '18', precioMin: '10', precioMax: '25' },
-    { id: '23', precioMin: '25', precioMax: '50' }
-]
-
-let alergenos = [
-    { id: '19', name: 'frutos secos'},
-    { id: '20', name: 'marisco'},
-    { id: '21', name: 'huevo'},
-    { id: '22', name: 'gluten'}
-]
+MongoClient.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true}) 
+.then(client => {
+    console.log('Conectado a MongoDB');
+    db = client.db('TURISMO_DB'); // Asignar la base de datos
+    }) .catch(err => { console.error('Error al conectar a MongoDB:', err);
+    
+    }); 
+    
+    const collection = db.collection('ESTABLECIMIENTOS');
 
 app.use(express.json());
+
 app.use(morgan('tiny'));
 
 // API
@@ -48,11 +28,20 @@ app.get('/zonas', (req, res) => {
     res.json(zonas);
 });
 
-app.get('/zonas/:id/establecimientos', (req,res) => { // llama a los establecimientos de esos zonas
+/*app.get('/zonas/:id/establecimientos', (req,res) => { // llama a los establecimientos de esos zonas
     const zonasId = req.params.id; //2
     const resultado = establecimientos.filter((establecimiento) => establecimiento.zonasId == zonasId);
     res.json(resultado);
-});
+});*/
+
+app.get('/zonas/:id/establecimientos', async (req, res) => {
+     const zonasId = req.params.id; // Zona ID que viene en la URL (por ejemplo, '60c72b2f9e1d8c3efcb15d10')
+     try { // Realiza una búsqueda en la colección "ESTABLECIMIENTOS" para obtener los establecimientos que tengan el "zona_id" igual a zonasId 
+    const resultado = await db.collection('ESTABLECIMIENTOS').find({ zona_id: new ObjectId(zonasId) }).toArray();
+      // Enviar el resultado de la consulta a MongoDB como respuesta JSON
+        res.json(resultado); } catch (error) { 
+        console.error('Error al obtener establecimientos:', error);
+        res.status(500).json({ error: 'Hubo un problema al obtener los establecimientos' }); } });
 
 //endpoint se une al anterior
 app.get('/zonas/:id/establecimientos', (req, res) => {
