@@ -11,7 +11,7 @@ let zonas = [
 let establecimientos = [
     { id: '9', name: 'Bar Pepe', zonasId: 3, dietaId: 16, preciosId: 23 },
     { id: '8', name: 'Bar 2', zonasId: 2, dietaId: 14, preciosId: 17 },
-    { id: '10', name: ' Bar 3', zonasId: 3, dietaId: 15, preciosId: 17 }
+    { id: '10', name: ' Bar 3', zonasId: 3, dietaId: 15, preciosId: 18 }
 ]
 
 let filtros = [
@@ -61,23 +61,23 @@ app.get('/zonas/:id/establecimientos', (req, res) => {
     const establecimientosPorZonas = establecimientos.filter((establecimiento) => establecimiento.zonasId == zonasId); //LLAMAMOS  A LOS ESTABLECIMIENTOS QUE CONTENGAN ESA ID
 
 
-
     if(precioId) {
-        establecimiento.zonasId == precioId;
+        establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.precioId==precioId);   // establecimiento.zonasId == precioId;
     }
 
     if(dietaId) {
-        establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.dieta?.includes(dietaId) ); // Asumimos que 'dieta' es un array en cada establecimiento.
+        establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.dietaId==dietaId); // Asumimos que 'dieta' es un array en cada establecimiento.
 
     }
 
     if(alergenosId) {
-        establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) =>  return alergenosId.some(alergeno) => establecimiento.alergenos?.includes(alergeno)); // Excluimos establecimientos que contengan alguno de los alérgenos
+        establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.alergenosId == alergenosId); // Excluimos establecimientos que contengan alguno de los alérgenos
     }
 
     res.json(establecimientosPorZonas);
 
 });
+
 
 app.listen(3000, () => {
     console.log('Ready on port 3000!');
