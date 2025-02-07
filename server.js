@@ -1,10 +1,15 @@
 import express from 'express';
 import morgan from 'morgan';
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient } from 'mongodb';
+import cors from 'cors';
 
-const app = express();
 const mongoUrl = 'mongodb://localhost:27017';
-const dbName = 'TURISMO_DB';
+const app = express();
+
+
+
+app.use(cors());
+app.use(express.json());
 
 let db;
 
@@ -16,28 +21,32 @@ MongoClient.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true})
     
     }); 
     
-    const collection = db.collection('ESTABLECIMIENTOS');
-
-app.use(express.json());
-
-app.use(morgan('tiny'));
 
 // API
 
-app.get('/zonas', (req, res) => {
-    res.json(zonas);
-});
 
-/*app.get('/zonas/:id/establecimientos', (req,res) => { // llama a los establecimientos de esos zonas
-    const zonasId = req.params.id; //2
-    const resultado = establecimientos.filter((establecimiento) => establecimiento.zonasId == zonasId);
-    res.json(resultado);
-});*/
+
+app.get('/zonas', async (req, res) => {
+
+    try { 
+        console.log("conectando a mongodb");
+        if (!db) {
+            return res.status(500).json({ error: 'La conexión a la base de datos no está lista' });
+        } 
+        const data = await db.collection('ZONAS').find().toArray(); // Buscamos en la colección correcta
+        console.log('✅ Datos obtenidos:', data);
+        res.json(data);
+    } catch (err) {
+        console.error('❌ Error al obtener los datos:', err);
+        res.status(500).json({ error: err.message });
+    }
+    });
+
 
 app.get('/zonas/:id/establecimientos', async (req, res) => {
      const zonasId = req.params.id; // Zona ID que viene en la URL (por ejemplo, '60c72b2f9e1d8c3efcb15d10')
      try { // Realiza una búsqueda en la colección "ESTABLECIMIENTOS" para obtener los establecimientos que tengan el "zona_id" igual a zonasId 
-    const resultado = await db.collection('ESTABLECIMIENTOS').find({ zona_id: new ObjectId(zonasId) }).toArray();
+    const resultado = await db.collection('ESTABLECIMIENTOS').find({ zona_id: new ObjectId(ZONASId) }).toArray();
       // Enviar el resultado de la consulta a MongoDB como respuesta JSON
         res.json(resultado); } catch (error) { 
         console.error('Error al obtener establecimientos:', error);
@@ -67,6 +76,9 @@ app.get('/zonas/:id/establecimientos', (req, res) => {
 
 });
 
+app.get('/', (req, res) => {
+    res.send('¡Servidor funcionando correctamente!');
+  });
 
 app.listen(3000, () => {
     console.log('Ready on port 3000!');
