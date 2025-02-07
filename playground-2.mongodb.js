@@ -6,11 +6,11 @@
 use('TURISMO_DB');
 
 // Create a new collection.
-db.createCollection('ESTABLECIMIENTOS');
-db.createCollection('ZONAS');
+db.createCollection('establecimientos');
+db.createCollection('zonas');
 
-
-db.ZONAS.insertMany([
+// Insertar zonas
+db.zonas.insertMany([
     {
         nombre: "Centro",
     },
@@ -20,11 +20,14 @@ db.ZONAS.insertMany([
     {
         nombre: "Puerto",
     },
+    
 ]);
 
-let ZONASId = db.ZONAS.findOne({nombre: "Centro"})._id;
+// Obtener el ID de la zona 'Centro'
+let zonasId = db.zonas.findOne({nombre: "Centro"})._id;
 
-db.ESTABLECIMIENTOS.insertMany([
+// Insertar establecimientos en 'Centro'
+db.establecimientos.insertMany([
     {
         name: "Bar Pepe",
         direccion: "Casa miswebos 23",
@@ -32,7 +35,7 @@ db.ESTABLECIMIENTOS.insertMany([
         precio: "10-15",
         dieta: "Flexitariana",
         paginaWeb: "www.barpepe.com",
-        zonaId: ZONASId
+        zonaId: zonasId
     },
     {
         name: "Bar Manolo",
@@ -41,7 +44,7 @@ db.ESTABLECIMIENTOS.insertMany([
         precio: "40-50",
         dieta: "Vegetariana",
         paginaWeb: "www.barmanolo.com",
-        zonaId: ZONASId
+        zonaId: zonasId
     },
     {
         name: "Bar Paqui",
@@ -50,12 +53,47 @@ db.ESTABLECIMIENTOS.insertMany([
         precio: "20-25",
         dieta: "Vegana",
         paginaWeb: "www.barpaqui.com",
-        zonaId: ZONASId
+        zonaId: zonasId
     }
 ]);
 
-ZONASId = db.ZONAS.findOne({nombre: "Casco Antiguo"})._id;
+// Obtener el ID de la zona 'Casco Antiguo'
+zonasId = db.zonas.findOne({nombre: "Casco Antiguo"})._id;
 
+// Insertar establecimientos en 'Casco Antiguo'
+db.establecimientos.insertMany([
+    {
+        name: "Bar Xikilicuatre",
+        direccion: "Casa miswebos 23",
+        descripcion: "aowoaowoaowooawooaow que rico",
+        precio: "10-15",
+        dieta: "Flexitariana",
+        paginaWeb: "www.barxikilicuatre.com",
+        zonaId: zonasId
+    },
+    {
+        name: "Bar MikuMikuUiu",
+        direccion: "Casa caracul 34",
+        descripcion: "sjahsdjkdhjkdahjk masmalo",
+        precio: "40-50",
+        dieta: "Vegetariana",
+        paginaWeb: "www.barmiku.com",
+        zonaId: zonasId
+    },
+    {
+        name: "Bar Madri",
+        direccion: "Casa llepapiles 45",
+        descripcion: "el peor masmalo",
+        precio: "20-25",
+        dieta: "Vegana",
+        paginaWeb: "www.barmadri.com",
+        zonaId: zonasId
+    }
+]);
+
+zonasId = db.ZONAS.findOne({nombre: "Puerto"})._id;
+
+// Insertar establecimientos en 'Puerto'
 db.ESTABLECIMIENTOS.insertMany([
     {
         name: "Bar Xikilicuatre",
@@ -64,9 +102,8 @@ db.ESTABLECIMIENTOS.insertMany([
         precio: "10-15",
         dieta: "Flexitariana",
         paginaWeb: "www.barxikilicuatre.com",
-        zonaId: ZONASId
+        zonaId: zonasId
     },
-
     {
         name: "Bar MikuMikuUiu",
         direccion: "Casa caracul 34",
@@ -74,9 +111,8 @@ db.ESTABLECIMIENTOS.insertMany([
         precio: "40-50",
         dieta: "Vegetariana",
         paginaWeb: "www.barmiku.com",
-        zonaId: ZONASId
+        zonaId: zonasId
     },
-
     {
         name: "Bar Madri",
         direccion: "Casa llepapiles 45",
@@ -84,7 +120,16 @@ db.ESTABLECIMIENTOS.insertMany([
         precio: "20-25",
         dieta: "Vegana",
         paginaWeb: "www.barmadri.com",
-        zonaId: ZONASId
+        zonaId: zonasId
     }
-
 ]);
+
+// Ahora, realizar una consulta para obtener establecimientos por zonaId:
+let zonaBusqueda = "Centro"; // Cambia esto según la zona que quieras consultar
+
+let zonaId = db.zonas.findOne({nombre: zonaBusqueda})._id;
+
+// Consulta para obtener los establecimientos de esa zona
+let establecimientos = db.ESTABLECIMIENTOS.find({ zonaId: zonaId }).toArray();
+
+// Mostrar los establecimientos encontrados
