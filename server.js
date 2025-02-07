@@ -9,7 +9,7 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
-const mongoUrl = 'mongodb://localhost:27017';
+const mongoUrl = 'mongodb://localhost:27017/';
 let db;
 
 MongoClient.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true})
@@ -23,13 +23,12 @@ MongoClient.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true})
 
 // API
 app.get('/zonas', async (req, res) => {
-
     try {
         console.log("conectando a mongodb");
         if (!db) {
             return res.status(500).json({error: 'La conexión a la base de datos no está lista'});
         }
-        const data = await db.collection('ZONAS').find().toArray(); // Buscamos en la colección correcta
+        const data = await db.collection('zonas').find().toArray(); // Buscamos en la colección correcta
         console.log('✅ Datos obtenidos:', data);
         res.json(data);
     } catch (err) {
@@ -38,50 +37,42 @@ app.get('/zonas', async (req, res) => {
     }
 });
 
-app.get('/zonas', async (req, res) => {
-    try { // Realiza una búsqueda en la colección "ESTABLECIMIENTOS" para obtener los establecimientos que tengan el "zona_id" igual a zonasId
-        const resultado = await db.collection('ZONAS').find.toArray();
-        res.json(resultado);
-    } catch (error) {
-        console.error('Error al obtener zonas:', error);
-        res.status(500).json({error: 'Hubo un problema al obtener las zonas'});
-    }
-});
+// Eliminar esta segunda definición duplicada
+//app.get('/zonas', async (req, res) => {
+//   // Este código está duplicado y no es necesario
+//});
 
-// TODO Recuarden borrar este endpoint y usar el de abajo ;)
+
+// Modificado: endpoint para obtener establecimientos filtrados por zona y otros parámetros
 app.get('/zonas/:id/establecimientos', async (req, res) => {
+    const { precioId, dietaId, alergenosId } = req.query;
     const zonasId = req.params.id; // Zona ID que viene en la URL (por ejemplo, '60c72b2f9e1d8c3efcb15d10')
-    try { // Realiza una búsqueda en la colección "ESTABLECIMIENTOS" para obtener los establecimientos que tengan el "zona_id" igual a zonasId
-        const resultado = await db.collection('ESTABLECIMIENTOS').find({zona_id: new ObjectId(ZONASId)}).toArray();
-        // Enviar el resultado de la consulta a MongoDB como respuesta JSON
-        res.json(resultado);
+
+    try {
+        // Buscar establecimientos en la zona especificada
+        let establecimientosPorZonas = await db.collection('establecimientos').find({ zonaId: new ObjectId(zonasId) }).toArray();
+
+        // Filtrar por precioId si se pasa como parámetro
+        if (precioId) {
+            establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.precio === precioId);
+        }
+
+        // Filtrar por dietaId si se pasa como parámetro
+        if (dietaId) {
+            establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.dieta === dietaId);
+        }
+
+        // Filtrar por alergenosId si se pasa como parámetro
+        if (alergenosId) {
+            establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.alergenos && establecimiento.alergenos.includes(alergenosId));
+        }
+
+        // Devolver los resultados
+        res.json(establecimientosPorZonas);
     } catch (error) {
         console.error('Error al obtener establecimientos:', error);
         res.status(500).json({error: 'Hubo un problema al obtener los establecimientos'});
     }
-});
-
-//endpoint se une al anterior
-app.get('/zonas/:id/establecimientos', async (req, res) => {
-    const {precioId, dietaId, alergenosId} = req.query;
-    const zonasId = req.params.id; //LLAMAMOS  A LOS ESTABLECIMIENTOS CON ESA :ID
-    let establecimientosPorZonas = await db.collection('ESTABLECIMIENTOS').find({zona_id: new ObjectId(zonasId)}).toArray();
-
-    if (precioId) {
-        establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.precioId == precioId);   // establecimiento.zonasId == precioId;
-    }
-
-    if (dietaId) {
-        establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.dietaId == dietaId); // Asumimos que 'dieta' es un array en cada establecimiento.
-
-    }
-
-    if (alergenosId) {
-        establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.alergenosId == alergenosId); // Excluimos establecimientos que contengan alguno de los alérgenos
-    }
-
-    res.json(establecimientosPorZonas);
-
 });
 
 app.get('/', (req, res) => {
