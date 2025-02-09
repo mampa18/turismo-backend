@@ -20,7 +20,7 @@ db.zonas.insertMany([
     {
         nombre: "Puerto",
     },
-    
+
 ]);
 
 // Obtener el ID de la zona 'Centro'
