@@ -91,10 +91,10 @@ db.establecimientos.insertMany([
     }
 ]);
 
-zonasId = db.ZONAS.findOne({nombre: "Puerto"})._id;
+zonasId = db.zonas.findOne({nombre: "Puerto"})._id;
 
 // Insertar establecimientos en 'Puerto'
-db.ESTABLECIMIENTOS.insertMany([
+db.establecimientos.insertMany([
     {
         name: "Bar Xikilicuatre",
         direccion: "Casa miswebos 23",
