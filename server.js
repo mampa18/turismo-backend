@@ -84,3 +84,22 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
     console.log('Ready on port 3000!');
 });
+
+app.get('/establecimientos/:id', async (req, res) => {
+  const establecimientoId = req.params.id;  // Extraer el ID del establecimiento desde la URL
+
+  try {
+    const establecimiento = await db.collection('establecimientos').findOne({
+      _id: new ObjectId(establecimientoId)  // Buscar el establecimiento por su ID
+    });
+
+    if (establecimiento) {
+      res.json(establecimiento);  // Si lo encuentra, responder con los datos del establecimiento
+    } else {
+      res.status(404).json({ error: 'Establecimiento no encontrado' });
+    }
+  } catch (error) {
+    console.error("❌ Error al obtener el establecimiento:", error);
+    res.status(500).json({ error: 'Hubo un problema al obtener el establecimiento' });
+  }
+});
