@@ -37,7 +37,8 @@ db.establecimientos.insertMany([
         telefono: "965 20 76 99",
         paginaWeb: "www.eldamasol.com",
         zonaId: zonasId,
-        imagen: "https://estaticos.elmundo.es/assets/multimedia/imagenes/2016/12/30/14831205166665.jpg"
+        imagen: "https://estaticos.elmundo.es/assets/multimedia/imagenes/2016/12/30/14831205166665.jpg",
+        alergeno:"pescado"
     },
     {
         name: "Bodhigreen Vegetariano",
