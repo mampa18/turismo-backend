@@ -37,114 +37,46 @@ app.get('/zonas', async (req, res) => {
     }
 });
 
-// Eliminar esta segunda definición duplicada
-//app.get('/zonas', async (req, res) => {
-//   // Este código está duplicado y no es necesario
-//});
-// app.get('/zonas/:id/establecimientos', async (req, res) => {
-//     const zonaId = req.params.id;
-  
-//     try {
-//       const establecimientos = await db.collection('establecimientos')
-//         .find({ zonaId: new ObjectId(zonaId) })
-//         .toArray();
-  
-//       res.json(establecimientos);
-//     } catch (error) {
-//       console.error('Error al obtener establecimientos:', error);
-//       res.status(500).json({ error: 'Hubo un problema al obtener los establecimientos' });
-//     }
-//   });
-// Modificado: endpoint para obtener establecimientos filtrados por zona y otros parámetros
-// app.get('/zonas/:id/establecimientos', async (req, res) => {
-//     const { precioId, dietaId, alergenoId } = req.query;
-//     const zonasId = req.params.id; // Zona ID que viene en la URL (por ejemplo, '60c72b2f9e1d8c3efcb15d10')
-
-//     try {
-//         // Buscar establecimientos en la zona especificada
-//         let establecimientosPorZonas = await db.collection('establecimientos').find({ zonaId: new ObjectId(zonasId) }).toArray();
-
-//         // Filtrar por precioId si se pasa como parámetro
-//         if (precioId) {
-//             establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.precio === precioId);
-//         }
-
-//         // Filtrar por dietaId si se pasa como parámetro
-//         if (dietaId) {
-//             establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.dieta === dietaId);
-//         }
-
-//         // Filtrar por alergenosId si se pasa como parámetro
-//         if (alergenoId) {
-//             establecimientosPorZonas = establecimientosPorZonas.filter((establecimiento) => establecimiento.alergeno && establecimiento.alergeno.includes(alergenosId));
-//         }
-
-//         // Devolver los resultados
-//         res.json(establecimientosPorZonas);
-//     } catch (error) {
-//         console.error('Error al obtener establecimientos:', error);
-//         res.status(500).json({error: 'Hubo un problema al obtener los establecimientos'});
-//     }
-// });
 app.get('/zonas/:id/establecimientos', async (req, res) => {
-    const { precioId, dietaId, alergenosId } = req.query;
-    const zonaId = req.params.id;
-  
-    try {
-      // Filtrar establecimientos por zona
-      let establecimientos = await db.collection('establecimientos').find({ zonaId }).toArray();
-  
-      // Filtrar por precio
-      if (precioId) {
-        establecimientos = establecimientos.filter(e => e.precio === precioId);
-      }
-  
-      // Filtrar por dieta
-      if (dietaId) {
-        establecimientos = establecimientos.filter(e => e.dieta === dietaId);
-      }
-  
-      // Filtrar por alérgenos
-      if (alergenosId) {
-        establecimientos = establecimientos.filter(e => e.alergenos && e.alergenos.includes(alergenosId));
-      }
-  
-      res.json(establecimientos);
-    } catch (error) {
-      console.error("Error al obtener los establecimientos:", error);
-      res.status(500).json({ error: "Hubo un problema al obtener los establecimientos" });
-    }
-  });
-// app.get('/filtros/precios', async (req, res) => {
-//     try {
-//         const precios = await db.collection('establecimientos').distinct('precio');
-//         res.json(precios);
-//     } catch (error) {
-//         console.error('Error al obtener precios:', error);
-//         res.status(500).json({ error: 'Error al obtener precios' });
-//     }
-// });
+  const zonaId = req.params.id; 
+  const { precioId, dietaId, alergenosId } = req.query; 
 
-// app.get('/filtros/dietas', async (req, res) => {
-//     try {
-//         const dietas = await db.collection('establecimientos').distinct('dieta');
-//         res.json(dietas);
-//     } catch (error) {
-//         console.error('Error al obtener dietas:', error);
-//         res.status(500).json({ error: 'Error al obtener dietas' });
-//     }
-// });
+  try {
+    const filtros = { zonaId: new ObjectId(zonaId) };
 
-// app.get('/filtros/alergenos', async (req, res) => {
-//     try {
-//         const alergenos = await db.collection('establecimientos').distinct('alergeno');
-//         res.json(alergenos);
-//     } catch (error) {
-//         console.error('Error al obtener alérgenos:', error);
-//         res.status(500).json({ error: 'Error al obtener alérgenos' });
-//     }
-// });
+    if (precioId) filtros.precio = precioId;
+    if (dietaId) filtros.dieta = dietaId;
+    if (alergenosId) filtros.alergeno = alergenosId;
 
+    console.log("📌 Aplicando filtros:", filtros); // <-- Asegúrate de que aquí se ven los filtros correctos
+
+    const establecimientos = await db.collection('establecimientos').find(filtros).toArray();
+    
+    console.log("✅ Establecimientos filtrados:", establecimientos);
+    res.json(establecimientos);
+
+  } catch (error) {
+    console.error("❌ Error al obtener establecimientos:", error);
+    res.status(500).json({ error: 'Hubo un problema al obtener los establecimientos' });
+  }
+});
+
+
+
+app.get('/filtros', async (req, res) => {
+  try {
+    // Obtener los valores únicos de los filtros
+    const precios = await db.collection('establecimientos').distinct('precio');
+    const dietas = await db.collection('establecimientos').distinct('dieta');
+    const alergenos = await db.collection('establecimientos').distinct('alergeno');
+
+    // Responder con los valores
+    res.json({ precios, dietas, alergenos });
+  } catch (error) {
+    console.error('Error al obtener los filtros:', error);
+    res.status(500).json({ error: 'Hubo un problema al obtener los filtros' });
+  }
+});
 app.get('/', (req, res) => {
     res.send('¡Servidor funcionando correctamente!');
 });
