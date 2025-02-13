@@ -85,6 +85,7 @@ app.listen(3000, () => {
     console.log('Ready on port 3000!');
 });
 
+//detalle
 app.get('/establecimientos/:id', async (req, res) => {
   const establecimientoId = req.params.id;  // Extraer el ID del establecimiento desde la URL
 
