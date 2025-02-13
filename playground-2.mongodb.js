@@ -30,7 +30,7 @@ let zonasId = db.zonas.findOne({nombre: "Centro"})._id;
 db.establecimientos.insertMany([
     {
         name: "El Damasol",
-        direccion: "Calle Castaños, 25, 03001 Alicante",
+        direccion: "Calle Castaños, 25",
         descripcion: "Un restaurante especializado en cocina alicantina con toques caseros. Destacan su arroz meloso de pescado y sus tapas elaboradas con productos frescos del mar.",
         precio: "€€€",
         dieta: "Flexitariana",
@@ -42,7 +42,7 @@ db.establecimientos.insertMany([
     },
     {
         name: "Bodhigreen Vegetariano",
-        direccion: "Calle San Fernando, 46 Bajo(cafe Belice), 03001 Alicante España",
+        direccion: "Calle San Fernando, 46 Bajo(cafe Belice)",
         descripcion: "Restaurante amplio con suelo de madera, que sirve zumos de frutas y platos vegetarianos y sin gluten.",
         precio: "€€",
         dieta: "Vegetariana",
@@ -55,7 +55,7 @@ db.establecimientos.insertMany([
 
     {
         name: "El buen comer",
-        direccion: "C. Mayor, 8, 03002 Alicante",
+        direccion: "C. Mayor, 8",
         descripcion: "Tapas, pescado, marisco y arroces de la cocina española en un restaurante informal con detalles de madera y terraza.",
         precio: "€",
         dieta: "Vegana",
@@ -74,7 +74,7 @@ zonasId = db.zonas.findOne({nombre: "Casco Antiguo"})._id;
 db.establecimientos.insertMany([
     {
         name: "Nou Manolín",
-        direccion: "Calle Mayor, 12, 03002 Alicante",
+        direccion: "Calle Mayor, 12",
         descripcion: "Fundado en 1971, este bar icónico ofrece productos de alta calidad como gambas rojas, arroz y jamón ibérico. Su barra es considerada una de las mejores del mundo.",
         precio: "€€€",
         dieta: "Mariscos y arroces",
@@ -86,7 +86,7 @@ db.establecimientos.insertMany([
     },
     {
         name: "La Ereta",
-        direccion: "Parque de la Ereta, s/n, 03001 Alicante",
+        direccion: "Parque de la Ereta, s/n",
         descripcion: "Con impresionantes vistas de la ciudad, La Ereta combina innovación y tradición en su cocina. Su chef, Dani Frías, ofrece una reinterpretación moderna de los sabores locales.",
         precio: "€€€",
         dieta: "Gastronomía local innovadora",
@@ -104,7 +104,7 @@ zonasId = db.zonas.findOne({nombre: "Puerto"})._id;
 db.establecimientos.insertMany([
     {
         name: "La Sastrería",
-        direccion: "Av. Conde de Vallellano, 8, 03001 Alicante",
+        direccion: "Av. Conde de Vallellano, 8",
         descripcion: "Un restaurante especializado en cocina alicantina con toques caseros. Destacan su arroz meloso de pescado y sus tapas elaboradas con productos frescos del mar.",
         precio: "€€",
         dieta: "Pescado y mariscos",
@@ -116,7 +116,7 @@ db.establecimientos.insertMany([
     },
     {
         name: "Falafelmanía",
-        direccion: "C/ de Perú, 13 Local 2E, 03008 Alicante España",
+        direccion: "C/ de Perú, 13 Local 2E",
         descripcion: "Auténtica cocina casera, exclusiva Vegetariana y Vegana, hecha con los exquisitos sabores del Medio Oriente y servida en deliciosos Menús de Degustación",
         precio: "€",
         dieta: "Vegano",
@@ -128,7 +128,7 @@ db.establecimientos.insertMany([
     },
     {
         name: "César Anca",
-        direccion: "Explanada de España, 3, 03002 Alicante",
+        direccion: "Explanada de España, 3",
         descripcion: "Con un enfoque en tapas modernas, César Anca reinterpreta clásicos españoles con creatividad, como sus huevos rotos con queso ahumado y romero.",
         precio: "€€",
         dieta: "Tapas creativas",
